@@ -19,13 +19,14 @@ posFilters = {
 	'prep': lambda x: x[2] == 'B0',
 	'insideQuote': lambda x: x[2] == 'Fra' or x[2].startswith('QuO'),
 	'closeQuote': lambda x: x[2] == 'Frc',
-	'firstName': lambda x: x[2].startswith('N') and x[2][6] == 'N',
+	'firstName':  lambda x: x[2].startswith('N') and x[2][6] == 'N',
 	'secondName': lambda x: (x[2].startswith('N') and x[2][6] in ['F', 'S']) or (x[2].startswith('A') and x[2][5] in ['F', 'S']),
 	#'conj': lambda x: x[2] == 'C0' or x[2] == 'Fc'
 	'conj': lambda x: x[2] == 'C0',
 	'quant': lambda x: x[2].startswith('Z')
 }
 
+#print posFilters
 """
 This is the list of groups which we are trying to extract. To disable any of the groups, just comment it
 Preposition Phrases extraction is disabled in order to be closer to Gold Standard

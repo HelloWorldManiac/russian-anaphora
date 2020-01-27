@@ -5,8 +5,10 @@
 import os, sys, codecs, re
 import cPickle
 import lemmatizer
-
+import pkg_resources
+#pkg_resources.require("sklearn==0.13")
 from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
+from sklearn.tree._tree import BestSplitter
 from sklearn import tree, svm
 from sklearn.svm import LinearSVC
 from sklearn.pipeline import Pipeline
@@ -54,9 +56,11 @@ class AnaphoraResolutorML:
 
 	def LoadModel(self, model, labels):
 		with open(model, 'rb') as inpFile:
+                        #print inpfile
 			self.classifier = cPickle.load(inpFile)
 
 		with open(labels, 'rb') as inpFile:
+                        #print inpfile
 			self.labels = cPickle.load(inpFile)
 
 	def LoadPronouns(self, pronouns):

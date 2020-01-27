@@ -141,9 +141,14 @@ def lemmatizer(text, startOffset = 0, loadFrom = None):
 	if loadFrom and IsSaved(loadFrom):
 		return Load(loadFrom + '.words'), len(text) + startOffset
 
-	freeling = subprocess.Popen([u'analyzer_client', u'50005'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-	tagged = freeling.communicate(text.encode('utf-8'))[0].decode('utf-8').strip().split('\n')
-
+	freeling = subprocess.Popen(['analyzer_client', '50005'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        #freeling = subprocess.Popen(['analyze', '-f','ru.cfg'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        print 'freeling ready'
+	tagged = freeling.communicate(text.encode('utf-8'))[0].decode('utf-8').strip()
+        #print(tagged)
+        tagged = tagged.split('\n')
+        #print tagged
+        print 'communication ok'
 	taggedList = []
 	offset = 0
 	for word in tagged:
@@ -169,7 +174,7 @@ def lemmatizer(text, startOffset = 0, loadFrom = None):
 	# if loadFrom is not None, but we are here, then there is no saved data yet, hence we need to save it
 	if loadFrom:
 		Save(loadFrom + '.words', taggedList)
-
+        #print taggedList
 	return taggedList, len(text) + startOffset
 if(__name__ == '__main__'):
 	if len(sys.argv) < 1:

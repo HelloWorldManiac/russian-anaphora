@@ -24,6 +24,7 @@ def printbrat(antecedent,anaphora,filename):
 
 def anaphora_res(text,window):
     text = text.replace(u' её',u' ее')
+    #print pwd()
     os.chdir('/var/www/anaphora')
     d = datetime.datetime.now()
     filename = d.strftime("%d.%m.%Y%I-%M%S")

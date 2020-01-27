@@ -14,12 +14,21 @@ if(__name__ == '__main__'):
 
 	text = ''
 	pronouns = anaphoramllib.LoadPronouns(sys.argv[2])
-	inpFile = codecs.open(sys.argv[1], encoding = 'utf-8')
-	for line in (line_raw for line_raw in inpFile):
+        if sys.argv[1] == '-':
+            text = sys.stdin.read()
+            text = text.decode('utf-8')
+            print text
+        else:
+	    inpFile = codecs.open(sys.argv[1], encoding = 'utf-8')
+	    for line in (line_raw for line_raw in inpFile):
 		text += line
-	
+	#print(text)
+        #print sys.argv[1]
 	words, curOffset = lemmatizer.lemmatizer(text)#, loadFrom = sys.argv[1])
+        print('***')
 	groups = lemmatizer.GetGroups(words)#, loadFrom = sys.argv[1])
+ 
+
 
 	mlResolutor = anaphoramllib.AnaphoraResolutorML()
 	mlResolutor.LoadPronouns(pronouns)
@@ -28,9 +37,14 @@ if(__name__ == '__main__'):
 
 	for group in groups:
 		if group[1] in mlResolutor.pronounIndex:
-			antecedent = mlResolutor.FindAntecedent(group, groups)
+                        try:
+			    antecedent = mlResolutor.FindAntecedent(group, groups)
+                        except:
+                            print text
+                            sys.exit()
 			if len(antecedent) == 0:
 				print 'no results for group at offset %d' % group[-2]
 			else:
 				print group[0], ' ---> ', antecedent[0][1][0]
-				#print antecedent
+                                text = text.replace(group[0],antecedent[0][1][0].lower())
+				print text

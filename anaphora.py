@@ -9,11 +9,17 @@ from lemmatizer import GetConjunctions
 def print_usage(file_used):
     print 'Usage: ' + file_used + ' <file to analyze> <length of analysis window, in words> <output format: plain,xml,brat>'
 
-if len(sys.argv) > 4 or len(sys.argv) < 2:
+if len(sys.argv) > 4 or len(sys.argv) == 0:
+    #print len(sys.argv)
     print_usage(sys.argv[0])
     exit(1)
-
-argument = sys.argv[1]
+elif len(sys.argv) == 1:
+    text = sys.stdin.read()
+    text = text.decode('utf-8')
+else:
+    text = codecs.open(sys.argv[1],'r','utf-8').read()
+    #argument = sys.argv[1]
+    #print argument
 window = 23
 currentOutput = 'plain'
 
@@ -80,7 +86,7 @@ for word in codecs.open('relatives.txt','r','utf-8'):
     relatives.append(word.strip())
 
 
-text = codecs.open(argument,'r','utf-8').read()
+
 
 
 anaphora_count = 0
@@ -90,12 +96,14 @@ if currentOutput == "xml":
     print '<document file="%s">' % argument.replace('AnaphFiles/','')
 
 words = []
+#print text.encode('utf-8')
 if True:
     res = text.replace(u' ее',u' её')
     if currentOutput == 'plain':
 	print res.strip().encode('utf-8')
     #processed, curOffset = lemmatizer(res, startOffset = curOffset, loadFrom = argument)
     processed, curOffset = lemmatizer(res, startOffset = curOffset)
+    #print processed
     for i in processed:
 	found = False
 	(token,lemma,tag,prob,offset) = i
@@ -103,9 +111,12 @@ if True:
 	if len(words) > window:
 	    dif = len(words) - window
 	    words = words[dif:]
+
 	if lemma in pronouns:
 	    ab = GetGroups(words)
+            #print ab
 	    previous_nouns = [word for word in ab if word[2].startswith('N') and not '.' in word[0] or word[2].startswith('F') or word[2].startswith('C')]
+            #print '*******' + previous_nouns
 	    #print 'Pronoun',token+'\t'+tag+'\t'+lemma
 	    if lemma == u"его" and tag.startswith('R'):
 		clause = 0
@@ -124,6 +135,7 @@ if True:
 	    elif lemma == u"он" or lemma == u"она" or lemma == u'они' or lemma == u'их' or lemma == u'оно':
 		if token == u"Ним":
 		    continue
+                #print '***' + lemma
 		if tag[3] == "F":
 		    clause = 0
 		    for w in reversed(previous_nouns):

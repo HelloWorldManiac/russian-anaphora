@@ -21,7 +21,7 @@ anaphora = Blueprint('anaphora', __name__, template_folder='templates')
 def finder():
     #print request.method
     if request.method == 'POST':
-	text = request.form['text']
+        text = request.form['text']
 	if text:
 	    try:
 		text = re.sub(' +', ' ', text)
